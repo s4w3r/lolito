@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Hola <span id="Nombreadmin">     
+    </span>, eres una zorra administrativa</h1>
+    <!-- USUARIO -->
+    <div id="Momento usuario">
+        <h2>Administrar usuarios</h2>
+        <input id="Mostrarusu" type="button" value="Usuarios Registrados">
+        <ul id="Usuarios"></ul>   
+        <input id="Eliminarusu" type="submit" value="Eliminar"> 
+    </div>
+
+    <!-- MANZANA -->
+    <div id="Momento manzanas">
+        <h2>Administrar manzanas</h2>
+        <input id="Mostrarma" type="button" value="Manzanas registradas">
+            <ul id="Manzanas"></ul>
+            <input id="Actuman" type="submit" value="Actualizar">
+    </div>
+
+    <script>
+         document.addEventListener('DOMContentLoaded',()=>{
+        const params= new URLSearchParams(window.location.search);
+        const admin=params.get('admin');
+        document.getElementById('Nombreadmin').textContent=`Bienvenido: ${admin}`;
+
+        //USUARIOS REGISTRADOS
+        const Mostrarusu = document.getElementById('Mostrarusu');
+        const Usuarios = document.getElementById('Usuarios');
+        const Eliminarusu = document.getElementById('Eliminarusu');
+
+        //MANZANAS REGISTRADAS
+        const Mostrarma = document.getElementById('Mostrarma');
+        const Manzanas = document.getElementById('Manzanas');
+
+
+        //MOSTRAR USUARIOS REGISTRADOS
+        Mostrarusu.addEventListener('click', async(event)=>{
+            event.preventDefault()
+            const xhru= new XMLHttpRequest();
+            xhru.open('POST','/obtener-usuarios',true);
+            xhru.setRequestHeader('Content-type','application/json');
+            xhru.onreadystatechange=function(){
+                if(xhru.readyState===4){
+                    if(xhru.status === 200){
+                        const data=JSON.parse(xhru.responseText); //DE JSON A CUALQUIER OTRA
+                        Usuarios.innerHTML=data.
+                        usuario.map(usuario=>`<li><label><input type="checkbox" name="usuario" value="${usuario}">${usuario[0]}-${usuario[1]}-${usuario[2]}-${usuario[3]}-${usuario[4]}</label></li>
+                        `).join('');
+                    }
+                    else{
+                        console.error('Error al obtener los usuarios');
+                    }
+                }
+            }
+            xhru.send(JSON.stringify({admin}));
+    })
+
+    //Eliminar usuario
+    Eliminarusu.addEventListener('click',async(event)=>{
+        event.preventDefault();
+        const usuarias = Array.from(Usuarios.querySelectorAll('li input[type="checkbox"]')).filter(checkbox=>checkbox.checked).map
+        (checkbox=>checkbox.value)
+        const xhruese = new XMLHttpRequest()
+        xhruese.open('POST','/eliminar-usuarios',true)
+        xhruese.setRequestHeader('Content-type','application/json')
+        xhruese.onreadystatechange = function (){
+            if(xhruese.readyState===4){
+                if(xhruese.status === 200){
+                    console.log('Usuario eliminar')
+                }
+                else{
+                    console.error('Error al borrar usuario')
+                }       
+            }
+        }
+        xhruese.send(JSON.stringify({usuario: usuarias}))
+       })
+
+
+       //MANZANAS
+       Mostrarma.addEventListener('click', async(event)=>{
+            event.preventDefault()
+            const xhrma= new XMLHttpRequest();
+            xhrma.open('POST','/obtener-manzanas',true);
+            xhrma.setRequestHeader('Content-type','application/json');
+            xhrma.onreadystatechange=function(){
+                if(xhrma.readyState===4){
+                    if(xhrma.status === 200){
+                        const data=JSON.parse(xhrma.responseText); //DE JSON A CUALQUIER OTRA
+                        Manzanas.innerHTML=data.
+                        manzana.map(manzana=>`<li><label><input type="checkbox" name="manzana" value="${manzana}">${manzana[0]}-${manzana[1]}-${manzana[2]}-${manzana[3]}</label></li>
+                        `).join('');
+                    }
+                    else{
+                        console.error('Error al obtener las manzanas');
+                    }
+                }
+            }
+            xhrma.send(JSON.stringify({admin}));
+    })
+
+         })
+    </script>
+</body>
+</html>
+
